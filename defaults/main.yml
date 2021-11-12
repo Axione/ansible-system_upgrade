@@ -1,0 +1,9 @@
+---
+required_package: bsdmainutils
+upgrade_pkgs_confirmation: false
+upgrade_reboot_confirmation: true
+upgrade_hold_pkg: []
+#  - grub-pc
+#  - grub2-common
+#  - grub-common
+#  - grub-pc-bin

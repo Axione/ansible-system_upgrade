@@ -1,0 +1,22 @@
+---
+- name: "REDHAT | Collect upgradable packages"
+  command: dnf check-update
+  args:
+    warn: false
+  register: dnf_listonly
+  changed_when: false
+  failed_when: false
+
+- name: "REDHAT | Show pending updates"
+  debug:
+    var: dnf_listonly.stdout_lines
+  changed_when: false
+
+- name: "REDHAT | Upgrade all packages"
+  dnf:
+    name: "*"
+    state: latest
+
+#- name: "Autoremove unneeded packages installed as dependencies"
+#  dnf:
+#    autoremove: yes
