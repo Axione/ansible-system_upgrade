@@ -3,4 +3,3 @@ skip_list:
   - '106'
   - '401'
   - package-latest
-  - titi
