@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/lotusnoir/ansible-system_upgrade/compare/0.1.0...0.2.0) - 2022-06-01
+
+### Commits
+
+- add jammy release support + lint fix [`be3e338`](https://github.com/lotusnoir/ansible-system_upgrade/commit/be3e3385096ee2fa0b2cc9e68d0ec50cb314db5a)
+- fix: remove unsupported centos8 + minor fixes [`a9561b7`](https://github.com/lotusnoir/ansible-system_upgrade/commit/a9561b7a6c1adb96b83cc0dbec945721488a1701)
+
 ## 0.1.0 - 2021-11-18
 
 ### Commits
