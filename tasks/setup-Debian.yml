@@ -1,34 +1,34 @@
 ---
 - name: "DEBIAN | apt-get update"
-  apt:
+  ansible.builtin.apt:
     update-cache: true
     cache_valid_time: 86400
   changed_when: 0
 
 - name: "DEBIAN | Required package to print results"
-  apt:
+  ansible.builtin.apt:
     name: "{{ required_package }}"
     state: present
 
 # Hold specific package
 - name: "DEBIAN | hold packages to avoid app failure"
-  command: apt-mark hold {{ upgrade_hold_pkg | flatten }}
+  ansible.builtin.command: apt-mark hold {{ upgrade_hold_pkg | flatten }}
   when: upgrade_hold_pkg|length > 0
 
 - name: "DEBIAN | get list of pending upgrades"
-  command: apt-get --simulate dist-upgrade
+  ansible.builtin.command: apt-get --simulate dist-upgrade
   args:
     warn: false # don't warn us about apt having its own plugin
   register: apt_simulate
   changed_when: false
 
 - name: "DEBIAN | parse apt-get output to get list of changed packages"
-  set_fact:
+  ansible.builtin.set_fact:
     updates: "{{ apt_simulate.stdout_lines | select('match', '^  ') | list | sort }}"
   changed_when: false
 
 - name: "DEBIAN | apt-get collect upgradable packages"
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\w,\-,\d,\.,~,:,\+]+)\s\[([\w,\-,\d,\.,~,:,\+]+)\]\s\(([\w,\-,\d,\.,~,:,\+]+)\)? /i) {print "PROGRAM= $1 INSTALLED= $2 AVAILABLE= $3\n"}' | column -s ' ' -t
   args:
@@ -38,18 +38,18 @@
   changed_when: false
 
 - name: "DEBIAN | show pending updates"
-  debug:
+  ansible.builtin.debug:
     var: apt_listonly.stdout_lines
   changed_when: false
 
 - name: "DEBIAN | Ask for upgrade"
-  pause:
+  ansible.builtin.pause:
     prompt: "Do you want to update this files ?"
   when: upgrade_pkgs_confirmation
 
 # if a new kernel is incoming, remove old ones to avoid full /boot
 - name: "DEBIAN | apt-get autoremove"
-  command: apt-get -y autoremove
+  ansible.builtin.command: apt-get -y autoremove
   args:
     warn: false
   when: '"Inst linux-image-" in apt_simulate.stdout'
@@ -57,24 +57,24 @@
 
 # do the actual apt-get dist-upgrade
 - name: "DEBIAN | apt-get dist-upgrade"
-  apt:
+  ansible.builtin.apt:
     upgrade: dist
 
 # check if we need a reboot
 - name: "DEBIAN | check if reboot needed"
-  stat:
+  ansible.builtin.stat:
     path: /var/run/reboot-required
   register: reboot_required_file
 
 - name: "DEBIAN | Prompt for rebooting"
-  pause:
+  ansible.builtin.pause:
     prompt: "Press ENTER to reboot {{ item }} now, or Ctrl+C to abort."
   when:
     - reboot_required_file.stat.exists
     - upgrade_reboot_confirmation
 
 - name: "DEBIAN | Rebooting machine"
-  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  ansible.builtin.shell: sleep 2 && shutdown -r now "Ansible updates triggered"
   async: 1
   poll: 0
   failed_when: false
@@ -84,7 +84,7 @@
 
 - name: "DEBIAN | Waiting for the machine to come back"
   become: false
-  wait_for:
+  ansible.builtin.wait_for:
     host: "{{ ansible_host }}"
     state: started
     port: 22

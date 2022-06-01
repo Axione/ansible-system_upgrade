@@ -1,6 +1,6 @@
 ---
 - name: "REDHAT | Collect upgradable packages"
-  command: dnf check-update
+  ansible.builtin.command: dnf check-update
   args:
     warn: false
   register: dnf_listonly
@@ -8,12 +8,12 @@
   failed_when: false
 
 - name: "REDHAT | Show pending updates"
-  debug:
+  ansible.builtin.debug:
     var: dnf_listonly.stdout_lines
   changed_when: false
 
 - name: "REDHAT | Upgrade all packages"
-  dnf:
+  ansible.builtin.dnf:
     name: "*"
     state: latest
 
