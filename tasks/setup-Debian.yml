@@ -68,7 +68,7 @@
 
 - name: "DEBIAN | Prompt for rebooting"
   ansible.builtin.pause:
-    prompt: "Press ENTER to reboot {{ item }} now, or Ctrl+C to abort."
+    prompt: "Press ENTER to reboot {{ ansible_host }} now, or Ctrl+C to abort."
   when:
     - reboot_required_file.stat.exists
     - upgrade_reboot_confirmation
