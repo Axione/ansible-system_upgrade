@@ -1,22 +1,22 @@
 ---
 - name: "REDHAT | Collect upgradable packages"
-  ansible.builtin.command: dnf check-update
+  ansible.builtin.command: yum check-update
   args:
     warn: false
-  register: dnf_listonly
+  register: pkglist
   changed_when: false
   failed_when: false
 
 - name: "REDHAT | Show pending updates"
   ansible.builtin.debug:
-    var: dnf_listonly.stdout_lines
+    var: pkglist.stdout_lines
   changed_when: false
 
 - name: "REDHAT | Upgrade all packages"
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "*"
     state: latest
 
 #- name: "Autoremove unneeded packages installed as dependencies"
-#  dnf:
+#  ansible.builtin.yum:
 #    autoremove: yes
