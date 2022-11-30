@@ -4,3 +4,4 @@ skip_list:
   - '401'
   - 'schema'
   - package-latest
+  - command-instead-of-module

@@ -1,8 +1,6 @@
 ---
 - name: "REDHAT | Collect upgradable packages"
   ansible.builtin.command: yum check-update
-  args:
-    warn: false
   register: pkglist
   changed_when: false
   failed_when: false

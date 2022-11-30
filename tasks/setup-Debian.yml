@@ -17,8 +17,6 @@
 
 - name: "DEBIAN | get list of pending upgrades"
   ansible.builtin.command: apt-get --simulate dist-upgrade
-  args:
-    warn: false # don't warn us about apt having its own plugin
   register: apt_simulate
   changed_when: false
 
@@ -32,7 +30,6 @@
     set -o pipefail
     apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\w,\-,\d,\.,~,:,\+]+)\s\[([\w,\-,\d,\.,~,:,\+]+)\]\s\(([\w,\-,\d,\.,~,:,\+]+)\)? /i) {print "PROGRAM= $1 INSTALLED= $2 AVAILABLE= $3\n"}' | column -s ' ' -t
   args:
-    warn: false
     executable: /bin/bash
   register: apt_listonly
   changed_when: false
@@ -50,8 +47,6 @@
 # if a new kernel is incoming, remove old ones to avoid full /boot
 - name: "DEBIAN | apt-get autoremove"
   ansible.builtin.command: apt-get -y autoremove
-  args:
-    warn: false
   when: '"Inst linux-image-" in apt_simulate.stdout'
   changed_when: 0
 
