@@ -13,7 +13,9 @@
 # Hold specific package
 - name: "DEBIAN | hold packages to avoid app failure"
   ansible.builtin.command: apt-mark hold {{ upgrade_hold_pkg | flatten }}
-  when: upgrade_hold_pkg|length > 0
+  when:
+    - upgrade_hold_pkg is defined
+    - upgrade_hold_pkg | length > 0
 
 - name: "DEBIAN | get list of pending upgrades"
   ansible.builtin.command: apt-get --simulate dist-upgrade
@@ -42,18 +44,21 @@
 - name: "DEBIAN | Ask for upgrade"
   ansible.builtin.pause:
     prompt: "Do you want to update this files ?"
-  when: upgrade_pkgs_confirmation
-
-# if a new kernel is incoming, remove old ones to avoid full /boot
-- name: "DEBIAN | apt-get autoremove"
-  ansible.builtin.command: apt-get -y autoremove
-  when: '"Inst linux-image-" in apt_simulate.stdout'
-  changed_when: 0
+  when: upgrade_pkgs_confirmation|bool
 
 # do the actual apt-get dist-upgrade
 - name: "DEBIAN | apt-get dist-upgrade"
   ansible.builtin.apt:
     upgrade: dist
+  when: not upgrade_simulation|bool
+
+- name: "DEBIAN | apt-get autoremove"
+  ansible.builtin.command: apt-get -y autoremove
+  changed_when: false
+  when:
+    - '"Inst linux-image-" in apt_simulate.stdout'
+    - upgrade_clean is defined
+    - upgrade_clean|bool
 
 # check if we need a reboot
 - name: "DEBIAN | check if reboot needed"
@@ -66,7 +71,7 @@
     prompt: "Press ENTER to reboot {{ ansible_host }} now, or Ctrl+C to abort."
   when:
     - reboot_required_file.stat.exists
-    - upgrade_reboot_confirmation
+    - upgrade_reboot_confirmation|bool
 
 - name: "DEBIAN | Rebooting machine"
   ansible.builtin.shell: sleep 2 && shutdown -r now "Ansible updates triggered"
@@ -75,7 +80,7 @@
   failed_when: false
   when:
     - reboot_required_file.stat.exists
-    - upgrade_reboot_confirmation
+    - upgrade_autoreboot|bool
 
 - name: "DEBIAN | Waiting for the machine to come back"
   become: false

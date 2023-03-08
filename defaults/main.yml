@@ -1,8 +1,21 @@
 ---
-required_package: bsdmainutils
+# Just print packages to update
+upgrade_simulation: true
+
+# Prompt a confirmation before updating
 upgrade_pkgs_confirmation: false
-upgrade_reboot_confirmation: true
-upgrade_hold_pkg: []
+
+# Prompt a confirmation before rebooting
+upgrade_reboot_confirmation: false
+
+# Do the reboot
+upgrade_autoreboot: false
+
+#Debian Clean
+upgrade_clean: false
+
+#List of packages to not update
+#upgrade_hold_pkg:
 #  - grub-pc
 #  - grub2-common
 #  - grub-common

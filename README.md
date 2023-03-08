@@ -19,6 +19,8 @@ none
 
 See [variables](/defaults/main.yml) for more details.
 
+With default variables, this role dont change anything on the system. You need to set the config variables like in the exemple in order to start configuration.
+
 ## Examples
 
         ---
@@ -28,9 +30,24 @@ See [variables](/defaults/main.yml) for more details.
           gather_facts: true
           roles:
             - role: ansible-system_upgrade
+          vars:
+            upgrade_simulation: false
+            upgrade_pkgs_confirmation: false
+            upgrade_reboot_confirmation: false
+            upgrade_autoreboot: true
+            upgrade_clean: true
+            upgrade_hold_pkg:
+              - grub-pc
+              - grub2-common
+              - grub-common
+              - grub-pc-bin
+
 
 
 ## License
 
 This project is licensed under Apache License. See [LICENSE](/LICENSE) for more details.
 
+## Author Information
+
+- [Philippe LEAL](https://github.com/lotusnoir)

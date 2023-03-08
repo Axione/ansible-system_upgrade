@@ -6,3 +6,10 @@
 
   roles:
     - role: ansible-system_upgrade
+
+  vars:
+    upgrade_simulation: false
+    upgrade_pkgs_confirmation: false
+    upgrade_reboot_confirmation: false
+    upgrade_autoreboot: true
+    upgrade_clean: true

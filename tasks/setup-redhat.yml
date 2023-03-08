@@ -1,0 +1,37 @@
+---
+- name: "REDHAT | Collect upgradable packages"
+  ansible.builtin.command: yum check-update
+  register: pkglist
+  changed_when: false
+  failed_when: false
+
+- name: "REDHAT | Show pending updates"
+  ansible.builtin.debug:
+    var: pkglist.stdout_lines
+  changed_when: false
+
+- name: "REDHAT | Upgrade all packages"
+  ansible.builtin.yum:
+    name: "*"
+    #use_backend: "{% if ansible_distribution_major_version == '9' %}yum{% else %}auto{% endif %}"
+    state: latest
+  when: not upgrade_simulation|bool
+
+- name: "REDHAT | Remove packages relationship"
+  ansible.builtin.shell: yum remove -y `package-cleanup --leaves`
+  with_sequence: count=3
+  changed_when: false
+  when:
+    - upgrade_clean is defined
+    - upgrade_clean|bool
+
+- name: "REDHAT | Packages clean all"
+  ansible.builtin.shell: yum clean all && rm -rf /var/cache/yum
+  changed_when: false
+  when:
+    - upgrade_clean is defined
+    - upgrade_clean|bool
+
+#- name: "Autoremove unneeded packages installed as dependencies"
+#  ansible.builtin.yum:
+#    autoremove: yes
