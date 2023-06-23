@@ -56,7 +56,6 @@
   ansible.builtin.command: apt-get -y autoremove
   changed_when: false
   when:
-    - '"Inst linux-image-" in apt_simulate.stdout'
     - upgrade_clean is defined
     - upgrade_clean|bool
 
