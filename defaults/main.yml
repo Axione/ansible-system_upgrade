@@ -20,3 +20,5 @@ upgrade_clean: false
 #  - grub2-common
 #  - grub-common
 #  - grub-pc-bin
+
+upgrade_yum_max_kernels: 2

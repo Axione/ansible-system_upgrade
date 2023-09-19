@@ -1,4 +1,10 @@
 ---
+- name: "REDHAT | Max kernels to keep"
+  ansible.builtin.lineinfile:
+    path: /etc/yum.conf
+    regexp: '^installonly_limit='
+    line: "installonly_limit={{ upgrade_yum_max_kernels }}"
+
 - name: "REDHAT | Collect upgradable packages"
   ansible.builtin.command: yum check-update
   register: pkglist
@@ -32,6 +38,13 @@
     - upgrade_clean is defined
     - upgrade_clean|bool
 
+#yum install yum-utils
+#package-cleanup --oldkernels --count=2
+#dnf -y remove --oldinstallonly --setopt installonly_limit=2 kernel
+
 #- name: "Autoremove unneeded packages installed as dependencies"
 #  ansible.builtin.yum:
-#    autoremove: yes
+#    autoremove: "yes"
+#  when:
+#    - upgrade_clean is defined
+#    - upgrade_clean|bool

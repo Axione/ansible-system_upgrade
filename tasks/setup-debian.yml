@@ -2,8 +2,7 @@
 - name: "DEBIAN | apt-get update"
   ansible.builtin.apt:
     update-cache: true
-    cache_valid_time: 86400
-  changed_when: 0
+  changed_when: false
 
 - name: "DEBIAN | Required package to print results"
   ansible.builtin.apt:
