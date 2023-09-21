@@ -4,14 +4,14 @@
   become: true
   any_errors_fatal: true
 
-  tasks:
-    - name: Include role
-      ansible.builtin.include_role:
-        name: ansible-system_upgrade
-
   vars:
     upgrade_simulation: false
     upgrade_pkgs_confirmation: false
     upgrade_reboot_confirmation: false
     upgrade_autoreboot: true
     upgrade_clean: true
+
+  tasks:
+    - name: Include role
+      ansible.builtin.include_role:
+        name: ansible-system_upgrade
