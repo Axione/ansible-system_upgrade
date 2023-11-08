@@ -14,11 +14,10 @@ upgrade_autoreboot: false
 #Debian Clean
 upgrade_clean: false
 
+#debian only
 #List of packages to not update
 upgrade_hold_pkg: []
-#  - grub-pc
-#  - grub2-common
-#  - grub-common
-#  - grub-pc-bin
+#package to stop to protect
+upgrade_unhold_pkg: []
 
 upgrade_yum_max_kernels: 2

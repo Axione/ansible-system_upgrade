@@ -16,6 +16,12 @@
     - upgrade_hold_pkg is defined
     - upgrade_hold_pkg | length > 0
 
+- name: "DEBIAN | UNhold packages to update them"
+  ansible.builtin.command: apt-mark unhold {{ upgrade_unhold_pkg | join(' ') }}
+  when:
+    - upgrade_unhold_pkg is defined
+    - upgrade_unhold_pkg | length > 0
+
 - name: "DEBIAN | get list of pending upgrades"
   ansible.builtin.command: apt-get --simulate dist-upgrade
   register: apt_simulate
