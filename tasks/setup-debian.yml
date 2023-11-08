@@ -11,7 +11,7 @@
 
 # Hold specific package
 - name: "DEBIAN | hold packages to avoid app failure"
-  ansible.builtin.command: apt-mark hold {{ upgrade_hold_pkg | flatten }}
+  ansible.builtin.command: apt-mark hold {{ upgrade_hold_pkg | join(' ') }}
   when:
     - upgrade_hold_pkg is defined
     - upgrade_hold_pkg | length > 0

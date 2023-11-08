@@ -15,7 +15,7 @@ upgrade_autoreboot: false
 upgrade_clean: false
 
 #List of packages to not update
-#upgrade_hold_pkg:
+upgrade_hold_pkg: []
 #  - grub-pc
 #  - grub2-common
 #  - grub-common
