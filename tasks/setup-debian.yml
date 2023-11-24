@@ -3,11 +3,19 @@
   ansible.builtin.apt:
     update-cache: true
   changed_when: false
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 - name: "DEBIAN | Required package to print results"
   ansible.builtin.apt:
     name: "{{ required_package }}"
     state: present
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 # Hold specific package
 - name: "DEBIAN | hold packages to avoid app failure"
@@ -55,6 +63,10 @@
 - name: "DEBIAN | apt-get dist-upgrade"
   ansible.builtin.apt:
     upgrade: dist
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
   when: not upgrade_simulation|bool
 
 - name: "DEBIAN | apt-get autoremove"

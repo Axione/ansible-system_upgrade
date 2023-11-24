@@ -21,6 +21,10 @@
     name: "*"
     #use_backend: "{% if ansible_distribution_major_version == '9' %}yum{% else %}auto{% endif %}"
     state: latest
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
   when: not upgrade_simulation|bool
 
 - name: "REDHAT | Remove packages relationship"
