@@ -49,10 +49,9 @@ With default variables, this role dont change anything on the system. You need t
             upgrade_autoreboot: true
             upgrade_clean: true
             upgrade_hold_pkg:
-              - grub-pc
-              - grub2-common
-              - grub-common
-              - grub-pc-bin
+              - openssl
+            upgrade_unhold_pkg:
+              - dbus
 
 
 
