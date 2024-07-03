@@ -1,0 +1,17 @@
+name: ansible-system_upgrade
+id: ari:cloud:compass:13ccdfa1-fb5d-41a4-9fd5-2c23ef1d97ea:component/dd5a9e2b-9095-4ab0-adb9-13a57e0ef868/d2334313-d7c8-487d-8cf2-f94b3b49844d
+description: Upgrade your system using ansible.
+configVersion: 1
+typeId: OTHER
+ownerId: ari:cloud:identity::team/6eaeb363-b375-4c63-9ed1-1868aaa3a6e4
+fields:
+  tier: 4
+links:
+  - name: null
+    type: REPOSITORY
+    url: https://github.com/Axione/ansible-system_upgrade
+relationships:
+  DEPENDS_ON: []
+labels:
+  - source:github
+customFields: null
