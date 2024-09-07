@@ -40,6 +40,7 @@
 - name: "DEBIAN | holding packages"
   ansible.builtin.command: apt-mark hold {{ pkg_to_hold | join(' ') }}
   changed_when: false
+  ignore_errors: true
   when:
     - pkg_to_hold is defined
     - pkg_to_hold | length > 0
@@ -47,6 +48,7 @@
 - name: "DEBIAN | UNhold packages to update them"
   ansible.builtin.command: apt-mark unhold {{ pkg_to_unhold | join(' ') }}
   changed_when: false
+  ignore_errors: true
   when:
     - pkg_to_unhold is defined
     - pkg_to_unhold | length > 0
