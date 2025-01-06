@@ -64,6 +64,7 @@
     name: "*"
     #use_backend: "{% if ansible_distribution_major_version == '9' %}yum{% else %}auto{% endif %}"
     state: latest
+    nobest: true
   register: pkg_result
   retries: 12
   delay: 10

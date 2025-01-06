@@ -1,4 +1,9 @@
 ---
+- name: "DEBIAN | Force kill eventual stuck processes"
+  ansible.builtin.command: pkill apt-get
+  changed_when: false
+  ignore_errors: true
+
 - name: "DEBIAN | apt-get update"
   ansible.builtin.apt:
     update-cache: true
