@@ -1,7 +1,7 @@
 ---
 # Hold specific package
 - name: "REDHAT | Install required package to hold packages"
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ required_package }}"
     state: present
   register: pkg_result
@@ -45,7 +45,7 @@
 - name: "REDHAT | Max kernels to keep"
   ansible.builtin.lineinfile:
     path: /etc/yum.conf
-    regexp: '^installonly_limit='
+    regexp: "^installonly_limit="
     line: "installonly_limit={{ upgrade_yum_max_kernels }}"
 
 - name: "REDHAT | Collect upgradable packages"
@@ -60,7 +60,7 @@
   changed_when: false
 
 - name: "REDHAT | Upgrade all packages"
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "*"
     #use_backend: "{% if ansible_distribution_major_version == '9' %}yum{% else %}auto{% endif %}"
     state: latest
@@ -85,7 +85,6 @@
   when:
     - upgrade_clean is defined
     - upgrade_clean|bool
-
 #yum install yum-utils
 #package-cleanup --oldkernels --count=2
 #dnf -y remove --oldinstallonly --setopt installonly_limit=2 kernel
