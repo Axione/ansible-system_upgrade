@@ -22,6 +22,7 @@
 ## Description
 
 Upgrade all packages
+
 ## Requirements
 
 none
@@ -53,7 +54,6 @@ With default variables, this role dont change anything on the system. You need t
               - openssh*
             upgrade_unhold_pkg:
               - dbus
-
 
 
 ## License

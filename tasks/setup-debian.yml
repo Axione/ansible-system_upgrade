@@ -1,26 +1,39 @@
 ---
-- name: "DEBIAN | Force kill eventual stuck processes"
-  ansible.builtin.command: pkill apt-get
-  changed_when: false
-  ignore_errors: true
+- name: "DEBIAN | Force kill stuck APT processes"
+  ansible.builtin.shell: |
+    set -o pipefail
+    pgrep -a 'apt|dpkg' || true
+    pgrep -a 'apt|dpkg' >/tmp/apt_pids.txt || true
+    if [ -s /tmp/apt_pids.txt ]; then
+      echo "Killing stuck APT processes:"
+      cat /tmp/apt_pids.txt
+      pkill -9 -f 'apt|dpkg' || true
+    else
+      echo "No stuck APT processes found."
+    fi
+  args:
+    executable: /bin/bash
+  register: apt_kill
+  changed_when: "'Killing stuck APT processes' in apt_kill.stdout"
+  failed_when: false
 
 - name: "DEBIAN | apt-get update"
   ansible.builtin.apt:
     update-cache: true
   changed_when: false
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
 
 - name: "DEBIAN | Install required package to print results"
   ansible.builtin.apt:
     name: "{{ required_package }}"
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
 
 # Hold specific package
 - name: "DEBIAN | list actual hold packages"
@@ -43,17 +56,23 @@
     - upgrade_unhold_pkg | length > 0
 
 - name: "DEBIAN | holding packages"
-  ansible.builtin.command: apt-mark hold {{ pkg_to_hold | join(' ') }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    apt-mark hold {{ pkg_to_hold | join(' ') }} >/dev/null 2>&1 || true
+  args:
+    executable: /bin/bash
   changed_when: false
-  ignore_errors: true
   when:
     - pkg_to_hold is defined
     - pkg_to_hold | length > 0
 
 - name: "DEBIAN | UNhold packages to update them"
-  ansible.builtin.command: apt-mark unhold {{ pkg_to_unhold | join(' ') }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    apt-mark unhold {{ pkg_to_unhold | join(' ') }} >/dev/null 2>&1 || true
+  args:
+    executable: /bin/bash
   changed_when: false
-  ignore_errors: true
   when:
     - pkg_to_unhold is defined
     - pkg_to_unhold | length > 0
@@ -91,10 +110,10 @@
 - name: "DEBIAN | apt-get dist-upgrade"
   ansible.builtin.apt:
     upgrade: dist
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   when: not upgrade_simulation|bool
 
 - name: "DEBIAN | apt-get autoremove"

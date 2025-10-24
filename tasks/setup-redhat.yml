@@ -4,10 +4,10 @@
   ansible.builtin.dnf:
     name: "{{ required_package }}"
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
 
 - name: "REDHAT | List actual hold packages"
   ansible.builtin.command: yum versionlock list
@@ -65,10 +65,10 @@
     # use_backend: "{% if ansible_distribution_major_version == '9' %}yum{% else %}auto{% endif %}"
     state: latest
     nobest: true
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   when: not upgrade_simulation|bool
 
 - name: "REDHAT | Remove packages relationship"
