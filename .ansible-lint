@@ -3,7 +3,7 @@ skip_list:
   - '106'
   - '401'
   - 'schema'
-  - line-length
+  - 'yaml[line-length]'
   - ignore-errors
   - package-latest
   - command-instead-of-module
