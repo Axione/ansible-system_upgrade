@@ -51,6 +51,13 @@ molecule_debian13:
   image: lotusnoir/molecule_play:latest
   script:
     - MOLECULE_DISTRIB=debian13 molecule test
+molecule_oraclelinux10:
+  <<: *molecule_job_template
+  image: lotusnoir/molecule_play:latest
+  tags:
+    - avx2
+  script:
+    - MOLECULE_DISTRIB=oraclelinux10 molecule test
 molecule_oraclelinux8:
   <<: *molecule_job_template
   image: lotusnoir/molecule_play:v2.0.0
@@ -71,6 +78,13 @@ molecule_redhat9:
   image: lotusnoir/molecule_play:latest
   script:
     - MOLECULE_DISTRIB=redhat9 molecule test
+molecule_rocky10:
+  <<: *molecule_job_template
+  image: lotusnoir/molecule_play:latest
+  tags:
+    - avx2
+  script:
+    - MOLECULE_DISTRIB=rocky10 molecule test
 molecule_rocky8:
   <<: *molecule_job_template
   image: lotusnoir/molecule_play:v2.0.0
@@ -114,6 +128,8 @@ changelog:
       optional: true
     - job: molecule_debian13
       optional: true
+    - job: molecule_oraclelinux10
+      optional: true
     - job: molecule_oraclelinux8
       optional: true
     - job: molecule_oraclelinux9
@@ -121,6 +137,8 @@ changelog:
     - job: molecule_redhat8
       optional: true
     - job: molecule_redhat9
+      optional: true
+    - job: molecule_rocky10
       optional: true
     - job: molecule_rocky8
       optional: true
