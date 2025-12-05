@@ -90,7 +90,10 @@
 - name: "DEBIAN | apt-get collect upgradable packages"
   ansible.builtin.shell: |
     set -o pipefail
-    apt-get --just-print full-upgrade 2>&1 | perl -ne 'if (/Inst\s([\w,\-,\d,\.,~,:,\+]+)\s\[([\w,\-,\d,\.,~,:,\+]+)\]\s\(([\w,\-,\d,\.,~,:,\+]+)\)? /i) {print "PROGRAM= $1 INSTALLED= $2 AVAILABLE= $3\n"}' | column -s ' ' -t
+    apt-get --just-print full-upgrade 2>&1 |
+      perl -ne 'if (/Inst\s([\w\-\d\.\~\:\+]+)\s\[([\w\-\d\.\~\:\+]+)\]\s\(([\w\-\d\.\~\:\+]+)\)? /i) {
+        print "PROGRAM=$1 INSTALLED=$2 AVAILABLE=$3\n"
+      }' | column -s ' ' -t
   args:
     executable: /bin/bash
   register: apt_listonly
@@ -106,7 +109,7 @@
     prompt: "Do you want to update this files ?"
   when: upgrade_pkgs_confirmation|bool
 
-# do the actual apt-get dist-upgrade
+# do the actual apt-get dist-upgrade, only on vms with pending updates
 - name: "DEBIAN | apt-get dist-upgrade"
   ansible.builtin.apt:
     upgrade: dist
@@ -114,7 +117,9 @@
   retries: 12
   delay: 10
   until: __pkg_result is success
-  when: not upgrade_simulation|bool
+  when:
+    - apt_listonly.stdout_lines is defined and apt_listonly.stdout_lines | length > 0
+    - not upgrade_simulation|bool
 
 - name: "DEBIAN | apt-get autoremove"
   ansible.builtin.command: apt-get -y autoremove
@@ -123,11 +128,13 @@
     - upgrade_clean is defined
     - upgrade_clean|bool
 
-# check if we need a reboot
+# check if we need a reboot, only on vms that updated
 - name: "DEBIAN | check if reboot needed"
   ansible.builtin.stat:
     path: /var/run/reboot-required
   register: reboot_required_file
+  when:
+    - upgrade_autoreboot|bool
 
 - name: "DEBIAN | Prompt for rebooting"
   ansible.builtin.pause:
