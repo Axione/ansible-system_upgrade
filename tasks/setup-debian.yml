@@ -140,6 +140,7 @@
   ansible.builtin.pause:
     prompt: "Press ENTER to reboot {{ ansible_host }} now, or Ctrl+C to abort."
   when:
+    - upgrade_autoreboot|bool
     - reboot_required_file.stat.exists
     - upgrade_reboot_confirmation|bool
 
@@ -150,8 +151,8 @@
   async: 1
   poll: 0
   when:
-    - reboot_required_file.stat.exists
     - upgrade_autoreboot|bool
+    - reboot_required_file.stat.exists
 
 - name: "DEBIAN | Waiting for the machine to come back"
   become: false
@@ -162,5 +163,6 @@
     delay: 30
   delegate_to: localhost
   when:
+    - upgrade_autoreboot|bool
     - reboot_required_file.stat.exists
     - upgrade_reboot_confirmation
